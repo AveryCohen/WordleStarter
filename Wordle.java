@@ -14,7 +14,8 @@ public class Wordle {
     public void run() {
         String currentLetter = "";
         gw = new WordleGWindow();
-        hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
+        // hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
+        hiddenWord = "apple";
         gw.addEnterListener((s) -> enterAction(s));
 
     }
@@ -28,8 +29,8 @@ public class Wordle {
         String currentLetter = "";
 
         String word = "";
+        int good = 0;
 
-            int good = 0;
             for (int j = 0; j < WordleDictionary.FIVE_LETTER_WORDS.length; j++) {
                 word = WordleDictionary.FIVE_LETTER_WORDS[j];
                 if (good == 1) {
@@ -53,18 +54,24 @@ public class Wordle {
             }
             if (good != 1) {
                 gw.showMessage("Not in word list");
+                return;
             }
             else {
                 for (int k = 0; k < WordleGWindow.N_COLS; k++) {
-                    String sCurrent = s.substring(k, k + 1);
-                    gw.setSquareLetter(gw.getCurrentRow(), k, sCurrent);
+                    String sCurrent = s.substring(k, k + 1).toLowerCase(Locale.ROOT);
+                    gw.setSquareLetter(gw.getCurrentRow(), k, sCurrent.toUpperCase(Locale.ROOT));
                     for (int l = 0; l < WordleGWindow.N_COLS; l++) {
                         if (sCurrent.equals(hiddenWord.substring(k, k + 1))) {
                             gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
+                            gw.setKeyColor(sCurrent, WordleGWindow.CORRECT_COLOR);
                         } else if (sCurrent.equals(hiddenWord.substring(l, l + 1)) && !(gw.getSquareColor(gw.getCurrentRow(), l) == WordleGWindow.CORRECT_COLOR)) {
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
+                            if (!gw.getKeyColor(sCurrent).equals(WordleGWindow.CORRECT_COLOR)) {
+                                gw.setKeyColor(sCurrent, WordleGWindow.PRESENT_COLOR);
+                            }
                         } else {
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
+                            gw.setKeyColor(sCurrent, WordleGWindow.MISSING_COLOR);
                         }
                     }
                 }
