@@ -25,8 +25,11 @@ public class Wordle {
 
     public void enterAction(String s) {
         String currentLetter = "";
-        int good = 0;
+
         String word = "";
+        int row = 0;
+        for (int h = 0; h < WordleGWindow.N_ROWS; h++) {
+            int good = 0;
             for (int j = 0; j < WordleDictionary.FIVE_LETTER_WORDS.length; j++) {
                 word = WordleDictionary.FIVE_LETTER_WORDS[j];
                 if (good == 1) {
@@ -46,24 +49,27 @@ public class Wordle {
                         }
                     }
                 }
-                for (int k = 0; k< WordleGWindow.N_COLS; k++) {
-                    String sCurrent = s.substring(k, k+1);
-                    for(int l = 0; l< WordleGWindow.N_COLS; k++) {
-                        if (sCurrent.equals(hiddenWord.substring(k, k+1))) {
-                            gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
-                        }
-                        else if (sCurrent.equals(hiddenWord.substring(l, l+1)) && !(gw.getSquareColor(gw.getCurrentRow(), l) == WordleGWindow.CORRECT_COLOR)) {
-                            gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
-                        }
-                        else {
-                            gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
-                        }
-                    }
-                }
             }
             if (good != 1) {
                 gw.showMessage("Not in word list");
             }
+            else {
+            for (int k = 0; k < WordleGWindow.N_COLS; k++) {
+                String sCurrent = s.substring(k, k + 1);
+                for (int l = 0; l < WordleGWindow.N_COLS; k++) {
+                    if (sCurrent.equals(hiddenWord.substring(k, k + 1))) {
+                        gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
+                    } else if (sCurrent.equals(hiddenWord.substring(l, l + 1)) && !(gw.getSquareColor(gw.getCurrentRow(), l) == WordleGWindow.CORRECT_COLOR)) {
+                        gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
+                    } else {
+                        gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
+                    }
+                }
+            }
+            row++;
+            gw.setCurrentRow(row);
+            }
+        }
     }
 
 /* Startup code */
