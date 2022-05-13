@@ -52,7 +52,7 @@ public class Wordle {
                         if (sCurrent.equals(hiddenWord.substring(k, k+1))) {
                             gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
                         }
-                        else if (sCurrent.equals(hiddenWord.substring(l, l+1))) {
+                        else if (sCurrent.equals(hiddenWord.substring(l, l+1)) && !(gw.getSquareColor(gw.getCurrentRow(), l) == WordleGWindow.CORRECT_COLOR)) {
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
                         }
                         else {
