@@ -48,8 +48,16 @@ public class Wordle {
                 }
                 for (int k = 0; k< WordleGWindow.N_COLS; k++) {
                     String sCurrent = s.substring(k, k+1);
-                    if (sCurrent.equals(hiddenWord.substring(k, k+1))) {
-                        gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
+                    for(int l = 0; l< WordleGWindow.N_COLS; k++) {
+                        if (sCurrent.equals(hiddenWord.substring(k, k+1))) {
+                            gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
+                        }
+                        else if (sCurrent.equals(hiddenWord.substring(l, l+1))) {
+                            gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
+                        }
+                        else {
+                            gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
+                        }
                     }
                 }
             }
