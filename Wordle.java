@@ -14,8 +14,8 @@ public class Wordle {
     public void run() {
         String currentLetter = "";
         gw = new WordleGWindow();
-        // hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
-        hiddenWord = "apple";
+        //hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
+        hiddenWord = "plane";
         gw.addEnterListener((s) -> enterAction(s));
 
     }
@@ -60,20 +60,28 @@ public class Wordle {
                 for (int k = 0; k < WordleGWindow.N_COLS; k++) {
                     String sCurrent = s.substring(k, k + 1).toLowerCase(Locale.ROOT);
                     gw.setSquareLetter(gw.getCurrentRow(), k, sCurrent.toUpperCase(Locale.ROOT));
+                    if (sCurrent.equals(hiddenWord.substring(k, k + 1))) {
+                        gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
+                        gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.CORRECT_COLOR);
+                    }
                     for (int l = 0; l < WordleGWindow.N_COLS; l++) {
-                        if (sCurrent.equals(hiddenWord.substring(k, k + 1))) {
-                            gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
-                            gw.setKeyColor(sCurrent, WordleGWindow.CORRECT_COLOR);
-                        } else if (sCurrent.equals(hiddenWord.substring(l, l + 1)) && !(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR))) {
+                        if (sCurrent.equals(hiddenWord.substring(l, l + 1)) && !(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR))) {
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
-                            if (!gw.getKeyColor(sCurrent).equals(WordleGWindow.CORRECT_COLOR)) {
-                                gw.setKeyColor(sCurrent, WordleGWindow.PRESENT_COLOR);
+                            if (!gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) {
+                                gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.PRESENT_COLOR);
                             }
-                        } else {
+                        } else if (!(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR)) && (!(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.PRESENT_COLOR)))) {
+
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
-                            gw.setKeyColor(sCurrent, WordleGWindow.MISSING_COLOR);
+                            if (!(gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) && !((gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.PRESENT_COLOR)))) {
+                                gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.MISSING_COLOR);
+                            }
                         }
                     }
+                }
+                if (s.toLowerCase(Locale.ROOT).equals(hiddenWord)) {
+                    gw.showMessage("You win!");
+                    return;
                 }
             }
             row++;
