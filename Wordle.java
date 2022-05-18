@@ -4,18 +4,18 @@
  * This module is the starter file for the Wordle assignment.
  */
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class Wordle {
     private String hiddenWord;
     private int row;
-
+    private ArrayList<String> usedLetters = new ArrayList<>();
 
     public void run() {
         String currentLetter = "";
         gw = new WordleGWindow();
-        //hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
-        hiddenWord = "plane";
+        hiddenWord = WordleDictionary.FIVE_LETTER_WORDS[(int) (Math.random() * (WordleDictionary.FIVE_LETTER_WORDS.length))];
         gw.addEnterListener((s) -> enterAction(s));
 
     }
@@ -30,6 +30,10 @@ public class Wordle {
 
         String word = "";
         int good = 0;
+        usedLetters.clear();
+        for (int h = 0; h < WordleGWindow.N_COLS; h++) {
+            usedLetters.add(hiddenWord.substring(h, h+1));
+        }
 
             for (int j = 0; j < WordleDictionary.FIVE_LETTER_WORDS.length; j++) {
                 word = WordleDictionary.FIVE_LETTER_WORDS[j];
@@ -57,28 +61,39 @@ public class Wordle {
                 return;
             }
             else {
+
                 for (int k = 0; k < WordleGWindow.N_COLS; k++) {
                     String sCurrent = s.substring(k, k + 1).toLowerCase(Locale.ROOT);
                     gw.setSquareLetter(gw.getCurrentRow(), k, sCurrent.toUpperCase(Locale.ROOT));
                     if (sCurrent.equals(hiddenWord.substring(k, k + 1))) {
                         gw.setSquareColor(gw.getCurrentRow(), k, WordleGWindow.CORRECT_COLOR);
                         gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.CORRECT_COLOR);
+                        usedLetters.remove(sCurrent);
                     }
+                }
                     for (int l = 0; l < WordleGWindow.N_COLS; l++) {
-                        if (sCurrent.equals(hiddenWord.substring(l, l + 1)) && !(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR))) {
-                            gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
-                            if (!gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) {
-                                gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.PRESENT_COLOR);
+                        String sCurrent = s.substring(l, l + 1).toLowerCase(Locale.ROOT);
+                        if (hiddenWord.contains(sCurrent) && !(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR))) {
+                            if (usedLetters.contains(sCurrent)) {
+                                gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.PRESENT_COLOR);
+                                usedLetters.remove(sCurrent);
+                                if (!gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) {
+                                        gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.PRESENT_COLOR);
+                                }
+                            }
+                            else{
+                                gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
+                                if (!gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) {
+                                    gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.PRESENT_COLOR);
+                                }
                             }
                         } else if (!(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.CORRECT_COLOR)) && (!(gw.getSquareColor(gw.getCurrentRow(), l).equals(WordleGWindow.PRESENT_COLOR)))) {
-
                             gw.setSquareColor(gw.getCurrentRow(), l, WordleGWindow.MISSING_COLOR);
                             if (!(gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.CORRECT_COLOR)) && !((gw.getKeyColor(sCurrent.toUpperCase(Locale.ROOT)).equals(WordleGWindow.PRESENT_COLOR)))) {
                                 gw.setKeyColor(sCurrent.toUpperCase(Locale.ROOT), WordleGWindow.MISSING_COLOR);
                             }
                         }
                     }
-                }
                 if (s.toLowerCase(Locale.ROOT).equals(hiddenWord)) {
                     gw.showMessage("You win!");
                     return;
